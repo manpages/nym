@@ -1,8 +1,9 @@
-{
-	"name": "nym",
-	"description": "An identity manager.",
-	"copyright": "Copyright © 2014, Jonn Mostovoy",
-	"authors": ["Jonn Mostovoy"],
-	"dependencies": {
-	}
-}
+{ "name":         "nym",
+  "description":  "An identity manager.",
+  "copyright":    "Copyright © 2014, Jonn Mostovoy",
+  "authors":      ["Jonn Mostovoy"],
+  "dependencies": {},
+  "subPackages": [{ "name":       "core",
+                    "targetType": "executable",
+                    "sourcePaths": [ "core/source" ],
+                    "importPaths": [ "core/source" ], }] }

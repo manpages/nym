@@ -2,14 +2,21 @@ import std.stdio;
 import std.process;
 import std.datetime;
 
-struct RestartStrategy {
-  public int max_restart_frequency = 5;
-}
-
-void main() {
-  immutable strategy = (new RestartStrategy).max_restart_frequency = 10;
+int main() {
+  auto max_restart_frequency = 10;
+  auto max_restarts = 5;
+  auto restarts = 0;
   while(true) {
-    immutable time0 = Clock.currTime();
-
+    auto τ0 = Clock.currTime();
+    auto pid = spawnProcess("./fakedaemon");
+    wait(pid);
+    if ((Clock.currTime() - τ0) < dur!"msecs"(1000/max_restart_frequency)) {
+      if(++restarts > max_restarts) {
+        writeln("Too many restarts");
+        return 1;
+      }
+    } else {
+      restarts = 0;
+    }
   }
 }

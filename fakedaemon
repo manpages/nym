@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "I'm a fake daemon"
+echo "And I crash on initialization working less than 2 milliseconds"
+echo "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
