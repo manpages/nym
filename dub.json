@@ -1,0 +1,8 @@
+{
+	"name": "nym",
+	"description": "An identity manager.",
+	"copyright": "Copyright © 2014, Jonn Mostovoy",
+	"authors": ["Jonn Mostovoy"],
+	"dependencies": {
+	}
+}
