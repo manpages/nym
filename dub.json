@@ -5,5 +5,14 @@
   "dependencies": {},
   "subPackages": [{ "name":       "core",
                     "targetType": "executable",
-                    "sourcePaths": [ "core/source" ],
-                    "importPaths": [ "core/source" ], }] }
+                    "sourcePaths": [ "app/core/source" ],
+                    "importPaths": [ "app/core/source" ], },
+                  { "name":       "node",
+                    "targetType": "executable",
+                    "sourcePaths": [ "app/node/source" ],
+                    "importPaths": [ "app/node/source" ], },
+                  { "name":       "persist",
+                    "targetType": "executable",
+                    "sourcePaths": [ "app/persist/source" ],
+                    "importPaths": [ "app/persist/source" ], }] 
+}

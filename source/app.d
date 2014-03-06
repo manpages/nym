@@ -9,9 +9,10 @@ int main() {
   while(true) {
     auto τ0 = Clock.currTime();
     auto pid = spawnProcess("./fakedaemon");
+    writeln(pid.osHandle);
     wait(pid);
     if ((Clock.currTime() - τ0) < dur!"msecs"(1000/max_restart_frequency)) {
-      if(++restarts > max_restarts) {
+      if(++restarts >= max_restarts) {
         writeln("Too many restarts");
         return 1;
       }
