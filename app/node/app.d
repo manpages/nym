@@ -16,17 +16,24 @@ void main() {
     zmq_msg_init(&req);
     writeln("Done.");
     writeln("Getting request");
+    string fuckyeah;
+    /*
     foreach(i; 0 .. zmq_recvmsg(socket, &req, 0)) {
+      fuckyeah = to!string(cast(char*)zmq_msg_data(&req));
       write((cast(char*)zmq_msg_data(&req))[i]);
     }
+    */
+    ulong bytes = zmq_recvmsg(socket, &req, 0);
+    fuckyeah = "Received: " ~ to!string((cast(char*)zmq_msg_data(&req))[0 .. bytes]);
     writeln("");
+    writeln("Fuck yeah ", fuckyeah);
     zmq_msg_close(&req);
     writeln("Done.");
 
     // todo: add fibers
     zmq_msg_t reply;
-    zmq_msg_init_size(&reply, "fuck".length);
-    (zmq_msg_data(&reply))[0 .. "fuck".length] = (cast(immutable(void*))"fuck".ptr)[0 .. "fuck".length];
+    zmq_msg_init_size(&reply, fuckyeah.length);
+    (zmq_msg_data(&reply))[0 .. fuckyeah.length] = (cast(immutable(void*))fuckyeah.ptr)[0 .. fuckyeah.length];
     zmq_sendmsg(socket, &reply, 0);
     zmq_msg_close(&reply);
   }
