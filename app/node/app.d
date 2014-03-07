@@ -17,6 +17,7 @@ void main() {
 
     // todo: add fibers
     string data = (`ok:` ~ to!string(zmq_msg_data(&req)));
+    writeln(`Seinding "`, data, `" of length `, data.length);
     zmq_msg_close(&req);
     
     zmq_msg_t reply;
