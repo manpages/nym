@@ -8,7 +8,7 @@ int main() {
   auto restarts = 0;
   while(true) {
     auto τ0 = Clock.currTime();
-    auto pid = spawnProcess(`nym_node 2>/dev/null || bin/nym_node`);
+    auto pid = spawnProcess(`sh -c "nym_node 2>/dev/null || bin/nym_node"`);
     writeln(pid.osHandle);
     wait(pid);
     if ((Clock.currTime() - τ0) < dur!"msecs"(1000/max_restart_frequency)) {
