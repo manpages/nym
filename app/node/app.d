@@ -11,29 +11,26 @@ void main() {
   zmq_bind(socket, toStringz(`tcp://*:67831`));
 
   while (true) {
+    writeln("Initializing zmq message");
     zmq_msg_t req;
     zmq_msg_init(&req);
-    size_t msg_size = zmq_recvmsg(socket, &req, 0);
+    writeln("Done.");
+    writeln("Getting request");
+    foreach(i; 0 .. zmq_recvmsg(socket, &req, 0)) {
+      write((cast(char*)zmq_msg_data(&req))[i]);
+    }
+    writeln("");
+    zmq_msg_close(&req);
+    writeln("Done.");
 
     // todo: add fibers
-    string data = (`ok:` ~ asString((cast(ubyte*)zmq_msg_data(&req))[0 .. msg_size]));
-    writeln(`Seinding "`, data, `" of length `, data.length);
-    zmq_msg_close(&req);
-    
     zmq_msg_t reply;
-    zmq_msg_init_size(&reply, data.length);
-    (zmq_msg_data(&reply))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];
+    zmq_msg_init_size(&reply, "fuck".length);
+    (zmq_msg_data(&reply))[0 .. "fuck".length] = (cast(immutable(void*))"fuck".ptr)[0 .. "fuck".length];
     zmq_sendmsg(socket, &reply, 0);
     zmq_msg_close(&reply);
   }
 
   //zmq_close(socket);
   //zmq_term(context);
-}
-
-char[] asString(ubyte[] data) @safe pure {
-    auto s = cast(typeof(return)) data;
-    import std.utf: validate;
-    validate(s);
-    return s;
 }

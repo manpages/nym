@@ -42,10 +42,9 @@ int main(string args[]) {
    *** The more you learn.
    ***/
   foreach(i; 0 .. data.length) {
-    writeln(i);
-    char character = (cast(ubyte*)zmq_msg_data(&msg))[i];
-    writeln(character);
+    write((cast(char*)zmq_msg_data(&msg))[i]);
   }
+  writeln("");
   writeln(`Done.`);
   writeln(`Sending request`);
   zmq_sendmsg(socket, &msg, 0);
