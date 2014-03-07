@@ -8,7 +8,7 @@ int main() {
   auto restarts = 0;
   while(true) {
     auto τ0 = Clock.currTime();
-    auto pid = spawnProcess([`sh`, `-c`, `"nym_node 2>/dev/null || bin/nym_node"`]);
+    auto pid = start_daemon();
     writeln(pid.osHandle);
     wait(pid);
     if ((Clock.currTime() - τ0) < dur!"msecs"(1000/max_restart_frequency)) {
@@ -19,5 +19,13 @@ int main() {
     } else {
       restarts = 0;
     }
+  }
+}
+
+Pid start_daemon() {
+  try {
+    return spawnProcess(`nym_node`);
+  } catch {
+    return spawnProcess(`bin/nym_node`);
   }
 }
