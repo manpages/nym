@@ -13,10 +13,10 @@ void main() {
   while (true) {
     zmq_msg_t req;
     zmq_msg_init(&req);
-    zmq_recvmsg(socket, &req, 0);
+    size_t msg_size = zmq_recvmsg(socket, &req, 0);
 
     // todo: add fibers
-    string data = (`ok:` ~ to!string(zmq_msg_data(&req)));
+    string data = (`ok:` ~ asString((cast(ubyte*)zmq_msg_data(&req))[0 .. msg_size]));
     writeln(`Seinding "`, data, `" of length `, data.length);
     zmq_msg_close(&req);
     
@@ -29,4 +29,11 @@ void main() {
 
   //zmq_close(socket);
   //zmq_term(context);
+}
+
+char[] asString(ubyte[] data) @safe pure {
+    auto s = cast(typeof(return)) data;
+    import std.utf: validate;
+    validate(s);
+    return s;
 }

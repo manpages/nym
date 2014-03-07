@@ -30,7 +30,22 @@ int main(string args[]) {
   //zmq_msg_init_data(&msg, cast(void*)data.ptr, data.length);
   zmq_msg_init_size(&msg, data.length);
   // memcpy via slicing
-  (zmq_msg_data(&msg))[0 .. (data.length-1)] = (cast(immutable(void*))data.ptr)[0 .. (data.length-1)];
+  (zmq_msg_data(&msg))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];
+  // let's make sure that shit works
+  /*** This code:
+   ***  foreach(j; 0 .. 2){
+   ***    writeln(j);
+   ***  }
+   *** prints
+   ***  0
+   ***  1
+   *** The more you learn.
+   ***/
+  foreach(i; 0 .. data.length) {
+    writeln(i);
+    char character = (cast(ubyte*)zmq_msg_data(&msg))[i];
+    writeln(character);
+  }
   writeln(`Done.`);
   writeln(`Sending request`);
   zmq_sendmsg(socket, &msg, 0);
