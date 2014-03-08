@@ -7,11 +7,11 @@
   "subPackages": [{ "name":       "daemon",
                     "targetType": "executable",
                     "sourcePaths": [ "app/daemon" ],
-                    "importPaths": [ "app/daemon" ], },
+                    "importPaths": [ "app/daemon" ] },
                   { "name":       "core",
                     "targetType": "library",
                     "sourcePaths": [ "app/core" ],
-                    "importPaths": [ "app/core" ], },
+                    "importPaths": [ "app/core" ] },
                   { "name":       "node",
                     "targetType": "executable",
                     "sourcePaths": [ "app/node" ],
@@ -20,5 +20,5 @@
                   { "name":       "persist",
                     "targetType": "library",
                     "sourcePaths": [ "app/persist" ],
-                    "importPaths": [ "app/persist" ], }] 
+                    "importPaths": [ "app/persist" ] }] 
 }
