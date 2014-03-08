@@ -17,4 +17,3 @@ for package in packages:
     call(["dub", "build", package])
     
 os.system('mv -vt bin/ nym* *.a')
-#call(["mv", "-vt", "bin/", "nym*", "*.a"])

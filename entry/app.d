@@ -14,6 +14,7 @@ int main(string args[]) {
     data ~= (' ' ~ arg);
   }
   writeln(`We want to send "`, data, `" of length `, data.length);
+  //
   // Initialize zmq and zmq socket
   writeln(`Initializing zmq socket`);
   void* context = zmq_init(1);
