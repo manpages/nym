@@ -2,6 +2,7 @@ import std.stdio;
 import std.string;
 import std.conv;
 import deimos.zmq.zmq;
+import vibe.data.json;
 
 void main() {
   writeln("Starting nym node");
@@ -16,28 +17,68 @@ void main() {
     zmq_msg_init(&req);
     writeln("Done.");
     writeln("Getting request");
-    string fuckyeah;
-    /*
-    foreach(i; 0 .. zmq_recvmsg(socket, &req, 0)) {
-      fuckyeah = to!string(cast(char*)zmq_msg_data(&req));
-      write((cast(char*)zmq_msg_data(&req))[i]);
+    long bytes = zmq_recvmsg(socket, &req, 0);
+    if(bytes == -1) {
+      import core.stdc.errno; 
+      writeln(to!string(cast(char*)zmq_strerror(errno)));
+      return;
     }
-    */
-    ulong bytes = zmq_recvmsg(socket, &req, 0);
-    fuckyeah = "Received: " ~ to!string((cast(char*)zmq_msg_data(&req))[0 .. bytes]);
-    writeln("");
-    writeln("Fuck yeah ", fuckyeah);
+    immutable string data = to!string((cast(char*)zmq_msg_data(&req))[0 .. bytes]);
     zmq_msg_close(&req);
     writeln("Done.");
 
     // todo: add fibers
+    handle(data);
     zmq_msg_t reply;
-    zmq_msg_init_size(&reply, fuckyeah.length);
-    (zmq_msg_data(&reply))[0 .. fuckyeah.length] = (cast(immutable(void*))fuckyeah.ptr)[0 .. fuckyeah.length];
+    zmq_msg_init_size(&reply, data.length);
+    (zmq_msg_data(&reply))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];
     zmq_sendmsg(socket, &reply, 0);
     zmq_msg_close(&reply);
   }
 
   //zmq_close(socket);
   //zmq_term(context);
+}
+
+string handle(immutable string request) {
+  writeln("Handling data");
+  import std.array;
+  //import nym.core;
+  string[] rpc_args = split(request);
+  mixin(gencode_dispatch([ "add", "alias", "info" ]));
+  dispatch(rpc_args);
+  writeln("Done.");
+  return "hi";
+}
+
+immutable string gencode_dispatch(immutable string[] verbs) @safe pure {
+  string code = "string dispatch(string[] x) {
+                   string result;
+                   switch(x[0]) {\n";
+  foreach(verb; verbs) {
+    code ~= `        case "` ~ verb ~ `": result = rpc_` ~ verb ~ `(x[1 .. $]); break;` ~ "\n";
+  }
+  code ~= `          default: result = rpc_default(x);}
+                   return result;}`;
+  return code;
+}
+
+string rpc_add(string[] _nothing) {
+  writeln("rpc: add");
+  return "add";
+}
+
+string rpc_alias(string[] _nothing) {
+  writeln("rpc: alias");
+  return "alias";
+}
+
+string rpc_info(string[] _nothing) {
+  writeln("rpc: info");
+  return "infp";
+}
+
+string rpc_default(string[] _nothing) {
+  writeln("rpc: default");
+  return "default";
 }

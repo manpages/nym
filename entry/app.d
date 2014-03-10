@@ -5,6 +5,7 @@ import std.string;
 import core.stdc.errno;
 import deimos.zmq.zmq;
 
+//testing
 int main(string args[]) {
   if(args.length == 1) {
     writeln("Not enough arguments.");
