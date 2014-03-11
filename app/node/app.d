@@ -43,7 +43,7 @@ void main() {
 string handle(immutable string request) {
   writeln("Handling data");
   import std.array;
-  //import nym.core;
+  import app.core.lib;
   string[] rpc_args = split(request);
   mixin(gencode_dispatch([ "add", "alias", "info" ]));
   dispatch(rpc_args);
@@ -61,24 +61,4 @@ immutable string gencode_dispatch(immutable string[] verbs) @safe pure {
   code ~= `          default: result = rpc_default(x);}
                    return result;}`;
   return code;
-}
-
-string rpc_add(string[] _nothing) {
-  writeln("rpc: add");
-  return "add";
-}
-
-string rpc_alias(string[] _nothing) {
-  writeln("rpc: alias");
-  return "alias";
-}
-
-string rpc_info(string[] _nothing) {
-  writeln("rpc: info");
-  return "infp";
-}
-
-string rpc_default(string[] _nothing) {
-  writeln("rpc: default");
-  return "default";
 }
