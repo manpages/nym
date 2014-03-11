@@ -28,12 +28,17 @@ void main() {
     writeln("Done.");
 
     // todo: add fibers
+    // infiber worker
     handle(data);
     zmq_msg_t reply;
     zmq_msg_init_size(&reply, data.length);
     (zmq_msg_data(&reply))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];
     zmq_sendmsg(socket, &reply, 0);
     zmq_msg_close(&reply);
+    // outfiber worker
+    // infiber state server
+    
+    // outfiber state server
   }
 
   //zmq_close(socket);
@@ -43,7 +48,7 @@ void main() {
 string handle(immutable string request) {
   writeln("Handling data");
   import std.array;
-  import app.core.lib;
+  import Nym.core.lib;
   string[] rpc_args = split(request);
   mixin(gencode_dispatch([ "add", "alias", "info" ]));
   dispatch(rpc_args);
@@ -51,14 +56,16 @@ string handle(immutable string request) {
   return "hi";
 }
 
-immutable string gencode_dispatch(immutable string[] verbs) @safe pure {
-  string code = "string dispatch(string[] x) {
-                   string result;
-                   switch(x[0]) {\n";
+immutable string gencode_dispatch(immutable string[] verbs) @safe pure {  
+  string code = `string dispatch(string[] x) {` ~
+                `  string result;` ~
+                `  switch(x[0]) {`;
   foreach(verb; verbs) {
-    code ~= `        case "` ~ verb ~ `": result = rpc_` ~ verb ~ `(x[1 .. $]); break;` ~ "\n";
+    code ~=     `    case "` ~ verb ~ `": ` ~ 
+                `      result = rpc_` ~ verb ~ `(x[1 .. $]);` ~
+                `      break;`;
   }
-  code ~= `          default: result = rpc_default(x);}
-                   return result;}`;
+  code ~=       `    default: result = rpc_default(x); }` ~
+                `  return result; }`;
   return code;
 }
