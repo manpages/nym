@@ -3,6 +3,7 @@ import std.string;
 import std.conv;
 import deimos.zmq.zmq;
 import vibe.data.json;
+import Nym.core.data;
 
 void main() {
   writeln("Starting nym node");
@@ -29,7 +30,7 @@ void main() {
 
     // todo: add fibers
     // infiber worker
-    handle(data);
+    string[string] result = handle(data);
     zmq_msg_t reply;
     zmq_msg_init_size(&reply, data.length);
     (zmq_msg_data(&reply))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];
@@ -45,20 +46,17 @@ void main() {
   //zmq_term(context);
 }
 
-string handle(immutable string request) {
-  writeln("Handling data");
+string[string] handle(immutable string request) {
   import std.array;
   import Nym.core.lib;
   string[] rpc_args = split(request);
   mixin(gencode_dispatch([ "add", "alias", "info" ]));
-  dispatch(rpc_args);
-  writeln("Done.");
-  return "hi";
+  return dispatch(rpc_args);
 }
 
 immutable string gencode_dispatch(immutable string[] verbs) @safe pure {  
-  string code = `string dispatch(string[] x) {` ~
-                `  string result;` ~
+  string code = `string[string] dispatch(string[] x) {` ~
+                `  string[string] result;` ~
                 `  switch(x[0]) {`;
   foreach(verb; verbs) {
     code ~=     `    case "` ~ verb ~ `": ` ~ 

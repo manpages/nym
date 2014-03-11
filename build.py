@@ -14,9 +14,9 @@ def packages():
         packages.append(packages[0] + ":" + sub["name"])
     return packages
 
-def build_do(arg1):
+def build_do(arg0, arg1):
     for package in packages():
-        call(["dub", "build", package] + arg1)
+        call(["dub", arg0, package] + arg1)
     os.system('mv -vt bin/ nym* *.a')
 
 def generate_makefile():
@@ -44,9 +44,11 @@ argv = sys.argv
 argv.pop(0)
 print(argv)
 if argv == []:
-    build_do([])
+    build_do('build', [])
+elif argv[0] == 'test':
+    build_do('test', [])
 elif argv[0] == '-f':
-    build_do(['--force'])
+    build_do('build', ['--force'])
 elif argv[0] == 'make':
     generate_makefile()
 elif argv[0] == 'sh':
