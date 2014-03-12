@@ -1,10 +1,22 @@
 module Nym.persist.lib;
 import vibe.data.json;
 import std.stdio;
+import std.string;
+import std.file;
 
-immutable bool dump(T)(T[string] data) @safe pure {
-  auto fh = file.open("~/.nym/nym.json", "w");
+void dump(T)(T[string] data) {
+  auto fh = File("/home/sweater/.nym/nym.json", "w+");
   fh.write(serializeToJson(data).toString);
   fh.close;
-  return true;
+}
+
+T[string] read(T)() {
+  auto fh = File("/home/sweater/.nym/nym.json", "r");
+  string json;
+  while(!fh.eof()) {
+    json ~= chomp(fh.readln());
+  }
+  writeln("Got " ~ json ~ " from storage");
+  T[string] result = deserializeJson!(T[string])(json);
+  return result;
 }

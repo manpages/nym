@@ -1,7 +1,0 @@
-{ "name":         "nymd",
-  "description":  "A identity manager daemon.",
-  "copyright":    "Copyright © 2014, Jonn Mostovoy",
-  "authors":      ["Jonn Mostovoy"],
-  "sourcePaths":  [ "." ],
-  "dependencies": {  }
-}

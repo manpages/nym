@@ -4,7 +4,7 @@ import std.conv;
 import std.typecons;
 import deimos.zmq.zmq;
 import Nym.core.data;
-//import Nym.persist.lib;
+import Nym.persist.lib;
 alias state = string[][string][string];
 alias response = Tuple!(string, state);
 
@@ -14,6 +14,9 @@ void main() {
 
   void* socket = zmq_socket(context, ZMQ_REP);
   zmq_bind(socket, toStringz(`tcp://*:67831`));
+
+  state nym_state;
+  nym_state = read!(string[][string])();
 
   while (true) {
     writeln("Initializing zmq message");
@@ -34,7 +37,10 @@ void main() {
     // todo: add fibers
     // infiber worker
     auto result = handle(data);
-    writeln("Got result! Status is " ~ result[0]);
+    nym_state = Merge!state.merge(nym_state, result[1]);
+
+    // such debug much redundand code wow
+    writeln("Got result! Status is “" ~ result[0] ~ "”");
     foreach(k, v; result[1]) {
       writeln(k);
       foreach(kk, vv; v) {
@@ -44,6 +50,18 @@ void main() {
         }
       }
     }
+    writeln("Nym state is currently this:");
+    foreach(k, v; nym_state) {
+      writeln(k);
+      foreach(kk, vv; v) {
+        writeln("  " ~ kk);
+        foreach(vvv; vv) {
+          writeln("    " ~ vvv);
+        }
+      }
+    }
+
+    dump(nym_state);
     zmq_msg_t reply;
     zmq_msg_init_size(&reply, data.length);
     (zmq_msg_data(&reply))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];

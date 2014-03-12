@@ -16,7 +16,8 @@ def packages():
 
 def build_do(arg0, arg1):
     for package in packages():
-        call(["dub", arg0, package] + arg1)
+        call(["dub", arg0, package, "-v"] + arg1)
+        print("\n\n* * * * *\n\n")
     os.system('mv -vt bin/ nym* *.a')
 
 def generate_makefile():

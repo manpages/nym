@@ -15,16 +15,17 @@
                     "targetType": "library",
                     "sourcePaths": [ "Nym/core" ],
                     "importPaths": [ "Nym/core" ] },
+                  { "name":       "persist",
+                    "targetType": "library",
+                    "sourcePaths": [ "Nym/persist" ],
+                    "importPaths": [ "Nym/persist" ],
+                    "dependencies": {"vibe-d": ">=0.7.16" } },
                   { "name":       "node",
                     "targetType": "executable",
                     "sourcePaths": [ "Nym/node" ],
                     "importPaths": [ "Nym/node" ],
                     "dependencies": { "zeromq": "~master",
                                       "vibe-d": ">=0.7.16",
-                                      "nym:core": "~master" } },
-                  { "name":       "persist",
-                    "targetType": "library",
-                    "sourcePaths": [ "Nym/persist" ],
-                    "importPaths": [ "Nym/persist" ],
-                    "dependencies": {"vibe-d": "~master" } }] 
+                                      "nym:core": "~master",
+                                      "nym:persist": "~master" } }] 
 }
