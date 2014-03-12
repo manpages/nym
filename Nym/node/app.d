@@ -1,10 +1,12 @@
 import std.stdio;
 import std.string;
 import std.conv;
+import std.typecons;
 import deimos.zmq.zmq;
 import Nym.core.data;
-import Nym.persist.lib;
+//import Nym.persist.lib;
 alias state = string[][string][string];
+alias response = Tuple!(string, state);
 
 void main() {
   writeln("Starting nym node");
@@ -32,22 +34,32 @@ void main() {
     // todo: add fibers
     // infiber worker
     auto result = handle(data);
+    writeln("Got result! Status is " ~ result[0]);
+    foreach(k, v; result[1]) {
+      writeln(k);
+      foreach(kk, vv; v) {
+        writeln("  " ~ kk);
+        foreach(vvv; vv) {
+          writeln("    " ~ vvv);
+        }
+      }
+    }
     zmq_msg_t reply;
     zmq_msg_init_size(&reply, data.length);
     (zmq_msg_data(&reply))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];
     zmq_sendmsg(socket, &reply, 0);
     zmq_msg_close(&reply);
     // outfiber worker
-    // infiber state server
+    // infiber response server
     
-    // outfiber state server
+    // outfiber response server
   }
 
   //zmq_close(socket);
   //zmq_term(context);
 }
 
-string[][string] handle(immutable string request) {
+response handle(immutable string request) {
   import std.array;
   import Nym.core.lib;
   string[] rpc_args = split(request);
@@ -56,8 +68,8 @@ string[][string] handle(immutable string request) {
 }
 
 immutable string gencode_dispatch(immutable string[] verbs) @safe pure {  
-  string code = `string[][string] dispatch(string[] x) {` ~
-                `  string[][string] result;` ~
+  string code = `response dispatch(string[] x) {` ~
+                `  response result;` ~
                 `  switch(x[0]) {`;
   foreach(verb; verbs) {
     code ~=     `    case "` ~ verb ~ `": ` ~ 

@@ -1,23 +1,30 @@
-//module app.core.core;
+module Nym.core.lib;
 import std.stdio;
+import std.typecons;
+
 alias state = string[][string][string];
+alias response = Tuple!(string, state);
 
-state rpc_add(string[] _nothing) {
-  writeln("core reports that it received: add");
-  return ["result": "add"];
+response rpc_add(string[] args) {
+  if(args.length != 1) {
+    return tuple("Add takes one argument.", cast(state)null);
+  }
+  state result;
+  result[args[0]] = ["handles": [args[0]]];
+  return tuple("ok", result);
 }
 
-state rpc_alias(string[] _nothing) {
+response rpc_alias(string[] _nothing) {
   writeln("core reports that it received: alias");
-  return ["result": "alias"];
+  return tuple("Not implemented", cast(state)null);
 }
 
-state rpc_info(string[] _nothing) {
+response rpc_info(string[] _nothing) {
   writeln("core reports that it received: info");
-  return ["result": "info"];
+  return tuple("Not implemented", cast(state)null);
 }
 
-state rpc_default(string[] _nothing) {
+response rpc_default(string[] _nothing) {
   writeln("core reports that it received: default");
-  return ["result": "default"];
+  return tuple("Not implemented", cast(state)null);
 }
