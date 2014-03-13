@@ -1,4 +1,5 @@
 module Nym.core.lib;
+import vibe.data.json;
 import std.stdio;
 import std.typecons;
 
@@ -22,7 +23,7 @@ response rpc_alias(string[] args, state nym_state) @safe pure {
     return tuple("Alias expects at least two arguments.", cast(state)null);
   }
   if(!(args[0] in nym_state)) {
-    return tuple("Main handle " ~args[0] ~ " isn't in the local database.", cast(state)null);
+    return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
   }
   if(string root = args[1].maybe_known(nym_state)) {
     return tuple(args[1] ~ " is already in the local database under main handle " ~ root, cast(state)null);
@@ -37,18 +38,27 @@ response rpc_info(string[] args, state nym_state) @safe pure {
     return tuple("Info expects at least three arguments.", cast(state)null);
   }
   if(!(args[0] in nym_state)) {
-    return tuple("Main handle " ~args[0] ~ " isn't in the local database.", cast(state)null);
+    return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
   }
   if((args[1] in nym_state[args[0]]) && (in_array(args[2], nym_state[args[0]][args[1]]))) {
-    return tuple("Main handle " ~ args[2] ~ " isn't already there.", cast(state)null);
+    return tuple("Value " ~ args[2] ~ " is already there.", cast(state)null);
   }
   state result;
   result[args[0]] = [args[1]: [args[2]]];
   return tuple("ok", result);
 }
 
-response rpc_get(string[] _nothing, state nym_state) @safe pure {
-  return tuple("Not implemented", cast(state)null);
+response rpc_get(string[] args, state nym_state) {
+  if(args.length < 2) {
+    return tuple("Get expects at least two arguments.", cast(state)null);
+  }
+  if(!(args[0] in nym_state)) {
+    return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
+  }
+  if(!(args[1] in nym_state[args[0]])) {
+    return tuple("Property " ~ args[1] ~ " isn't tracked for " ~ args[0], cast(state)null);
+  }
+  return tuple(serializeToJson(nym_state[args[0]][args[1]]).toString, cast(state)null);
 }
 
 response rpc_who(string[] _nothing, state nym_state) @safe pure {
