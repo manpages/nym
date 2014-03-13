@@ -61,8 +61,12 @@ response rpc_get(string[] args, state nym_state) {
   return tuple(serializeToJson(nym_state[args[0]][args[1]]).toString, cast(state)null);
 }
 
-response rpc_who(string[] _nothing, state nym_state) @safe pure {
-  return tuple("Not implemented", cast(state)null);
+response rpc_who(string[] args, state nym_state) {
+  if(args.length < 1) {
+    return tuple("Get expects one argument.", cast(state)null);
+  }
+  args ~= "handles";
+  return rpc_get(args, nym_state);
 }
 
 response rpc_default(string[] _nothing) @safe pure {
