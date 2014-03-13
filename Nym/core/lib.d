@@ -69,7 +69,7 @@ response rpc_who(string[] args, state nym_state) {
   return rpc_get(args, nym_state);
 }
 
-response rpc_default(string[] _nothing) @safe pure {
+response rpc_default(string[] _nothing, state nym_state) @safe pure {
   return tuple("Invalid RPC call.", cast(state)null);
 }
 
