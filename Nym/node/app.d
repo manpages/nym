@@ -64,8 +64,8 @@ void main() {
 
     dump(nym_state);
     zmq_msg_t reply;
-    zmq_msg_init_size(&reply, data.length);
-    (zmq_msg_data(&reply))[0 .. data.length] = (cast(immutable(void*))data.ptr)[0 .. data.length];
+    zmq_msg_init_size(&reply, result[0].length);
+    (zmq_msg_data(&reply))[0 .. result[0].length] = (cast(immutable(void*))result[0].ptr)[0 .. result[0].length];
     zmq_sendmsg(socket, &reply, 0);
     zmq_msg_close(&reply);
     // outfiber worker
@@ -97,7 +97,7 @@ immutable string gencode_dispatch(immutable string[] verbs) @safe pure {
                 `      result = rpc_` ~ verb ~ `(x[1 .. $], nym_state);` ~
                 `      break;`;
   }
-  code ~=       `    default: result = rpc_default(x); }` ~
+  code ~=       `    default: result = rpc_default(x, nym_state); }` ~
                 `  return result; }`;
   return code;
 }

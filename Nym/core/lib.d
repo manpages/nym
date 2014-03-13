@@ -8,7 +8,7 @@ alias response = Tuple!(string, state);
 
 response rpc_add(string[] args, state nym_state) @safe pure {
   if(args.length < 1) {
-    return tuple("Add expects an argument.", cast(state)null);
+    return tuple("Add expects one argument.", cast(state)null);
   }
   if(string root = args[0].maybe_known(nym_state)) {
     return tuple(args[0] ~ " is already in the local database under main handle " ~ root, cast(state)null);
@@ -20,7 +20,7 @@ response rpc_add(string[] args, state nym_state) @safe pure {
 
 response rpc_alias(string[] args, state nym_state) @safe pure {
   if(args.length < 2) {
-    return tuple("Alias expects at least two arguments.", cast(state)null);
+    return tuple("Alias expects two arguments.", cast(state)null);
   }
   if(!(args[0] in nym_state)) {
     return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
@@ -35,7 +35,7 @@ response rpc_alias(string[] args, state nym_state) @safe pure {
 
 response rpc_info(string[] args, state nym_state) @safe pure {
   if(args.length < 3) {
-    return tuple("Info expects at least three arguments.", cast(state)null);
+    return tuple("Info expects three arguments.", cast(state)null);
   }
   if(!(args[0] in nym_state)) {
     return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
@@ -50,7 +50,7 @@ response rpc_info(string[] args, state nym_state) @safe pure {
 
 response rpc_get(string[] args, state nym_state) {
   if(args.length < 2) {
-    return tuple("Get expects at least two arguments.", cast(state)null);
+    return tuple("Get expects two arguments.", cast(state)null);
   }
   if(!(args[0] in nym_state)) {
     return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
