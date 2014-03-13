@@ -37,8 +37,8 @@ void main() {
 
     // todo: add fibers
     // infiber worker
-    auto result = handle(data);
-    nym_state = Merge!state.merge(nym_state, result[1]);
+    auto result = handle(data, nym_state);
+    nym_state = Merge!state.merge(result[1], nym_state);
 
     // such debug much redundand code wow
     writeln("Got result! Status is “" ~ result[0] ~ "”");
@@ -78,23 +78,23 @@ void main() {
   //zmq_term(context);
 }
 
-response handle(immutable string request) {
+response handle(immutable string request, state nym_state) {
   import std.array;
   import Nym.core.lib;
   writeln("Handling request: " ~ request);
   auto rpc_args = deserializeJson!(string[])(request);
-  mixin(gencode_dispatch([ "add", "alias", "info" ]));
+  mixin(gencode_dispatch([ "add", "alias", "info", "get", "who" ]));
   writeln("Done.");
-  return dispatch(rpc_args);
+  return dispatch(rpc_args, nym_state);
 }
 
 immutable string gencode_dispatch(immutable string[] verbs) @safe pure {  
-  string code = `response dispatch(string[] x) {` ~
+  string code = `response dispatch(string[] x, state nym_state) {` ~
                 `  response result;` ~
                 `  switch(x[0]) {`;
   foreach(verb; verbs) {
     code ~=     `    case "` ~ verb ~ `": ` ~ 
-                `      result = rpc_` ~ verb ~ `(x[1 .. $]);` ~
+                `      result = rpc_` ~ verb ~ `(x[1 .. $], nym_state);` ~
                 `      break;`;
   }
   code ~=       `    default: result = rpc_default(x); }` ~
