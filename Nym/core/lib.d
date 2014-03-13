@@ -70,7 +70,7 @@ response rpc_who(string[] args, state nym_state) {
 }
 
 response rpc_default(string[] _nothing) @safe pure {
-  return tuple("Not implemented", cast(state)null);
+  return tuple("Invalid RPC call.", cast(state)null);
 }
 
 string maybe_known(string who, state where) @safe pure {
