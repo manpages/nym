@@ -6,8 +6,8 @@ alias state = string[][string][string];
 alias response = Tuple!(string, state);
 
 response rpc_add(string[] args) {
-  if(args.length != 1) {
-    return tuple("Add takes one argument.", cast(state)null);
+  if(args.length < 1) {
+    return tuple("Add an argument.", cast(state)null);
   }
   state result;
   result[args[0]] = ["handles": [args[0]]];

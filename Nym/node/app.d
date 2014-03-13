@@ -3,6 +3,7 @@ import std.string;
 import std.conv;
 import std.typecons;
 import deimos.zmq.zmq;
+import vibe.data.json;
 import Nym.core.data;
 import Nym.persist.lib;
 alias state = string[][string][string];
@@ -80,8 +81,10 @@ void main() {
 response handle(immutable string request) {
   import std.array;
   import Nym.core.lib;
-  string[] rpc_args = split(request);
+  writeln("Handling request: " ~ request);
+  auto rpc_args = deserializeJson!(string[])(request);
   mixin(gencode_dispatch([ "add", "alias", "info" ]));
+  writeln("Done.");
   return dispatch(rpc_args);
 }
 

@@ -3,18 +3,16 @@ import std.exception;
 import std.conv;
 import std.string;
 import core.stdc.errno;
+import vibe.data.json;
 import deimos.zmq.zmq;
 
 //testing
-int main(string args[]) {
+int main(string[] args) {
   if(args.length == 1) {
     writeln("Not enough arguments.");
     return 1;
   }
-  string data = args[1];
-  foreach(arg; args[2 .. $]) {
-    data ~= (' ' ~ arg);
-  }
+  string data = serializeToJson(args[1 .. $]).toString;
   // Initialize zmq and zmq socket
   writeln(`Initializing zmq socket`);
   void* context = zmq_init(1);
