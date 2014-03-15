@@ -2,6 +2,7 @@ module Nym.core.lib;
 import vibe.data.json;
 import std.stdio;
 import std.typecons;
+import std.string;
 
 alias state = string[][string][string];
 alias response = Tuple!(string, state);
@@ -37,14 +38,17 @@ response rpc_info(string[] args, state nym_state) @safe pure {
   if(args.length < 3) {
     return tuple("Info expects three arguments.", cast(state)null);
   }
-  if(!(args[0] in nym_state)) {
-    return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
+  string name = args[0];
+  string field = args[1].toLower();
+  string data = args[2];
+  if(!(name in nym_state)) {
+    return tuple("Main handle " ~ name ~ " isn't in the local database.", cast(state)null);
   }
-  if((args[1] in nym_state[args[0]]) && (in_array(args[2], nym_state[args[0]][args[1]]))) {
-    return tuple("Value " ~ args[2] ~ " is already there.", cast(state)null);
+  if((field in nym_state[name]) && (in_array(data, nym_state[name][field]))) {
+    return tuple("Value " ~ data ~ " is already there.", cast(state)null);
   }
   state result;
-  result[args[0]] = [args[1]: [args[2]]];
+  result[name] = [field: [data]];
   return tuple("ok", result);
 }
 

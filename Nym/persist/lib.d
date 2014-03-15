@@ -17,6 +17,9 @@ T[string] read(T)() {
     json ~= chomp(fh.readln());
   }
   writeln("Got " ~ json ~ " from storage");
-  T[string] result = deserializeJson!(T[string])(json);
-  return result;
+  if(json == "")
+    json = "{}";
+  return deserializeJson!(T[string])(json);
+  //T[string] result = deserializeJson!(T[string])(json);
+  //return result;
 }
