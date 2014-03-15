@@ -56,13 +56,15 @@ response rpc_get(string[] args, state nym_state) {
   if(args.length < 2) {
     return tuple("Get expects two arguments.", cast(state)null);
   }
-  if(!(args[0] in nym_state)) {
-    return tuple("Main handle " ~ args[0] ~ " isn't in the local database.", cast(state)null);
+  string name = args[0];
+  string field = args[1].toLower();
+  if(!(name in nym_state)) {
+    return tuple("Main handle " ~ name ~ " isn't in the local database.", cast(state)null);
   }
-  if(!(args[1] in nym_state[args[0]])) {
-    return tuple("Property " ~ args[1] ~ " isn't tracked for " ~ args[0], cast(state)null);
+  if(!(field in nym_state[name])) {
+    return tuple("Property " ~ field ~ " isn't tracked for " ~ name, cast(state)null);
   }
-  return tuple(serializeToJson(nym_state[args[0]][args[1]]).toString, cast(state)null);
+  return tuple(serializeToJson(nym_state[name][field]).toString, cast(state)null);
 }
 
 response rpc_who(string[] args, state nym_state) {
