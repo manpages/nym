@@ -46,7 +46,7 @@ int main(string[] args) {
   // That's it for Zmq
   zmq_close(socket);
   //term never returns the control but why do we care, the process will terminate anyway.
-  //zmq_term(context);
+  zmq_ctx_destroy(context);
 
   return 0;
 }
