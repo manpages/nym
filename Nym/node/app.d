@@ -25,7 +25,7 @@ void main() {
     zmq_msg_init(&req);
     writeln("Done.");
     writeln("Getting request");
-    long bytes = zmq_recvmsg(socket, &req, 0);
+    long bytes = zmq_msg_recv(&req, socket, 0);
     if(bytes == -1) {
       import core.stdc.errno; 
       writeln(to!string(cast(char*)zmq_strerror(errno)));
@@ -66,7 +66,7 @@ void main() {
     zmq_msg_t reply;
     zmq_msg_init_size(&reply, result[0].length);
     (zmq_msg_data(&reply))[0 .. result[0].length] = (cast(immutable(void*))result[0].ptr)[0 .. result[0].length];
-    zmq_sendmsg(socket, &reply, 0);
+    zmq_msg_send(&reply, socket, 0);
     zmq_msg_close(&reply);
     // outfiber worker
     // infiber response server

@@ -33,7 +33,7 @@ int main(string[] args) {
 
   zmq_msg_t reply;
   zmq_msg_init(&reply);
-  long bytes = zmq_recvmsg(socket, &reply, 0);
+  long bytes = zmq_msg_recv(&reply, socket, 0);
   if(bytes == -1) {
     import core.stdc.errno; 
     writeln("Error: " ~ to!string(cast(char*)zmq_strerror(errno)));
